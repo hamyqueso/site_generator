@@ -5,4 +5,5 @@ def main():
 
     print(dummy_node)
 
-main()
+if __name__ == "__main__":
+    main()
