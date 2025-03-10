@@ -8,10 +8,38 @@ class HTMLNode():
         self.props = props # A dictionary of key-value pairs representing the attributes of the HTML tag. For example, a link (<a> tag) might have {"href": "https://www.google.com"}
 
     def to_html(self):
-        raise NotImplementedError
+        raise NotImplementedError("to_html method not implemented")
     
     def props_to_html(self):
-        return " ".join(list(map(lambda kv: f'{kv[0]}="{kv[1]}"', self.props.items())))
+        if self.props == None:
+            return ""
+        return " "+" ".join(list(map(lambda kv: f'{kv[0]}="{kv[1]}"', self.props.items())))
         
     def __repr__(self):
         return f"HTMLNode(tag= {self.tag}, value= {self.value}, children= {self.children}, props= {self.props_to_html()})"
+    
+
+class LeafNode(HTMLNode):
+    def __init__(self, tag, value, props=None):
+        super().__init__(tag, value, None, props)
+
+    def to_html(self):
+
+        if self.value == None:
+            raise ValueError("invalid HTML: no value")
+        elif self.tag == None:
+            return self.value
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+        # elif self.tag == "a":
+        #     return f'<{self.tag} href="{self.props.get("href")}">{self.value}</{self.tag}>'
+        # elif self.tag[0] in ["h", "p"]:
+        #     return f"<{self.tag}>{self.value}</{self.tag}>"
+        # elif self.tag == "b":
+        #     return f"<p><{self.value}>{self.value}</{self.tag}>"
+        # elif self.tag == "img":
+        #     return f'<{self.tag} href="{self.props.get("href")}" alt="{self.props.get("alt")}">'
+
+    def __repr__(self):
+        return f"LeafNode({self.tag}, {self.value}, {self.props})"
+        
+    
