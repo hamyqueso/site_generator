@@ -21,3 +21,20 @@ class TextNode():
     
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+    
+    def return_html_tag(self):
+        match self.text_type:
+            case TextType.TEXT:
+                return None
+            case TextType.BOLD:
+                return 'b'
+            case TextType.ITALIC:
+                return 'i'
+            case TextType.CODE:
+                return 'code'
+            case TextType.LINK:
+                return 'a'
+            case TextType.IMAGE:
+                return 'img'
+            case _:
+                raise Exception("invalid text type")
