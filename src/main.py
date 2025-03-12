@@ -20,19 +20,26 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     
     for node in old_nodes:
-        if text_type == TextType.TEXT:
+        if node.text_type != TextType.TEXT:
             new_nodes.append(node)
-        elif text_type not in [TextType.LINK, TextType.IMAGE]:
-            lines = node.text.split(delimiter)
-            if len(lines) < 3:
-                raise Exception("Invalid markdown syntax: missing matching closing delimiter")
-            
-            line1 = TextNode(lines[0], TextType.TEXT)
-            line2 = TextNode(lines[1], text_type)
-            line3 = TextNode(lines[2], TextType.TEXT)
-            new_nodes.extend([line1, line2, line3])
+            continue
         else:
-            new_nodes.append(node)
+            lines = node.text.split(delimiter)
+            if len(lines) % 2 == 0:
+                raise Exception("Invalid markdown syntax: missing matching closing delimiter")
+            nodes = []
+
+            for i in range(len(lines)):
+                if lines[i] == "":
+                    continue
+                elif i % 2 == 0:
+                    nodes.append(TextNode(lines[i], TextType.TEXT))
+                else:
+                    nodes.append(TextNode(lines[i], text_type))
+            # line1 = TextNode(lines[0], TextType.TEXT)
+            # line2 = TextNode(lines[1], text_type)
+            # line3 = TextNode(lines[2], TextType.TEXT)
+            new_nodes.extend(nodes)
     
     return new_nodes
 
