@@ -26,9 +26,6 @@ class TestBlockMarkdownModule(unittest.TestCase):
             md = """
     This is **bolded** paragraph
 
-
-
-
     This is another paragraph with _italic_ text and `code` here
     This is the same paragraph on a new line
 
@@ -44,6 +41,58 @@ class TestBlockMarkdownModule(unittest.TestCase):
                     "- This is a list\n- with items",
                 ],
             )
+
+    def test_block_to_block_type(self):
+        md = """
+            # This is a heading
+
+            This is **bolded** paragraph
+
+            This is another paragraph with _italic_ text and `code` here
+            This is the same paragraph on a new line
+
+            - This is a list
+            - with items
+
+            1. This is an ordered list
+            2. Second item
+
+            ```This is a code block```
+
+            > This is a quote block
+            """
+        
+        blocks = markdown_to_blocks(md)
+        results = []
+
+        for block in blocks:
+             results.append(block_to_block_type(block))
+
+        self.assertListEqual(
+             results,
+             [
+                  BlockType.HEADING,
+                  BlockType.PARAGRAPH,
+                  BlockType.PARAGRAPH,
+                  BlockType.UNORDERED_LIST,
+                  BlockType.ORDERED_LIST,
+                  BlockType.CODE,
+                  BlockType.QUOTE
+             ]
+        )
+
+    def test_block_to_block_type_no_block(self):
+        md = """
+            """
+        
+        blocks = markdown_to_blocks(md)
+        results = []
+
+        for block in blocks:
+             results.append(block_to_block_type(block))
+
+        self.assertRaises(ValueError)
+         
 
 if __name__ == "__main__":
     main()
