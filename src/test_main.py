@@ -3,6 +3,7 @@ import unittest
 from textnode import *
 from htmlnode import *
 from main import *
+from inline_markdown_functions import *
 
 class TestMainModule(unittest.TestCase):
     
