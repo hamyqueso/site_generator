@@ -12,21 +12,27 @@ class BlockType(Enum):
 
 
 def main():
-    md = ""
-    # md = """
-    #     # This is a heading
+    # md = ""
+    md = """
+        # This is a heading
 
-    #     This is **bolded** paragraph
+        This is **bolded** paragraph
 
-    #     This is another paragraph with _italic_ text and `code` here
-    #     This is the same paragraph on a new line
+        This is another paragraph with _italic_ text and `code` here
+        This is the same paragraph on a new line
 
-    #     - This is a list
-    #     - with items
+        - This is a list
+        - with items
 
-    #     1. This is an ordered list
-    #     2. Second item
-    #     """
+        1. This is an ordered list
+        2. Second item
+        """
+
+    # md = """### This is a heading with a **bolded** word.
+
+    # ```This is a code block with a **bold** word```
+    
+    # """
     blocks = markdown_to_blocks(md)
     print(blocks)
     for block in blocks:
@@ -51,7 +57,7 @@ def block_to_block_type(block):
     identifier = None
     if block.startswith("```") and block.endswith("```"):
         identifier = "code"
-    elif re.match("(#+)", block):
+    elif re.match("^(#+)", block):
         identifier = "heading"
     elif block.startswith("> "):
         identifier = "quote"
