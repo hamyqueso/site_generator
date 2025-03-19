@@ -57,7 +57,7 @@ def block_to_block_type(block):
     identifier = None
     if block.startswith("```") and block.endswith("```"):
         identifier = "code"
-    elif re.match("^(#+)", block):
+    elif block.startswith(("#", "##", '###', '####', '#####', '######')):
         identifier = "heading"
     elif block.startswith("> "):
         identifier = "quote"

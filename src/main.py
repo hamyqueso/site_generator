@@ -37,7 +37,7 @@ def markdown_to_html_node(markdown):
 
         elif block_type == BlockType.CODE:
             outer_heading_tag = "pre"
-            text_node = TextNode(block.strip("```"), TextType.CODE)
+            text_node = TextNode(block.strip("```").lstrip("\n"), TextType.CODE)
             inner_node = text_node_to_html_node(text_node)
             outer_node = ParentNode(outer_heading_tag, [inner_node])
 
@@ -104,7 +104,8 @@ def main():
 
     md = """###### This is a heading with a **bolded** word.
 
-    ```This is a code block with a **bold** word```
+    ```This is a code block 
+    with a **bold** word```
 
     > This is a quote block with some _italics_.
     > A second line in the quote block.
