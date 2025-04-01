@@ -4,6 +4,8 @@ from extract_markdown_images_and_links import *
 from block_markdown_functions import *
 from inline_markdown_functions import *
 import re
+from static_to_public import copy_static_to_public
+import os, shutil
 
 def text_node_to_html_node(text_node):
     text = text_node.text
@@ -102,29 +104,37 @@ def main():
 
     # print(node)
 
-    md = """###### This is a heading with a **bolded** word.
+    # md = """###### This is a heading with a **bolded** word.
 
-    ```This is a code block 
-    with a **bold** word```
+    # ```This is a code block 
+    # with a **bold** word```
 
-    > This is a quote block with some _italics_.
-    > A second line in the quote block.
+    # > This is a quote block with some _italics_.
+    # > A second line in the quote block.
 
-    1. This is an ordered list
-    2. Second item with a **bold** word
+    # 1. This is an ordered list
+    # 2. Second item with a **bold** word
 
-    - This is an unordered list.
-    - The second item with some _fancy_ italics.
+    # - This is an unordered list.
+    # - The second item with some _fancy_ italics.
 
-    This is a normal paragraph block.
-    This is a newline in the same paragraph block.
+    # This is a normal paragraph block.
+    # This is a newline in the same paragraph block.
 
-    """
+    # """
     
 
     # for node in markdown_to_html_node(md):
     #     print(node.to_html())
-    print(markdown_to_html_node(md).to_html())
+    # print(markdown_to_html_node(md).to_html())
+
+    path_to_static = __file__.removesuffix("src/main.py") + "static"
+    path_to_public = __file__.removesuffix("src/main.py") + "public"
+
+    shutil.rmtree(path_to_public)
+    os.mkdir(path_to_public)
+
+    copy_static_to_public(path_to_static, path_to_public)
 
 if __name__ == "__main__":
     main()
