@@ -121,6 +121,7 @@ def generate_page(from_path, template_path, dest_path, basepath):
     print(title)
     index = template.replace("{{ Title }}", title)
     index = index.replace("{{ Content }}", content)
+    index = index.replace('href="/', f'href="{basepath}')
 
     file_path = os.path.join(dest_path, "index.html")
     with open(file_path, "w") as f:
@@ -186,21 +187,21 @@ def main():
     else:
         basepath = "/"
 
-    path_to_public = "./public"
+    dest_dir = "./docs"
     path_to_static = "./static"
 
-    if os.path.exists(path_to_public):
-        shutil.rmtree(path_to_public)
-    os.mkdir(path_to_public)
+    if os.path.exists(dest_dir):
+        shutil.rmtree(dest_dir)
+    os.mkdir(dest_dir)
 
-    copy_static_to_public(path_to_static, path_to_public)
+    copy_static_to_public(path_to_static, dest_dir)
 
     content_dir = "./content"
     template_path = "template.html"
 
     # generate_page(content_path, template_path, path_to_public)
 
-    generate_pages_recursive(content_dir, template_path, path_to_public, basepath)
+    generate_pages_recursive(content_dir, template_path, dest_dir, basepath)
 
     
 
