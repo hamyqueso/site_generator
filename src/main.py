@@ -5,7 +5,7 @@ from block_markdown_functions import *
 from inline_markdown_functions import *
 import re
 from static_to_public import copy_static_to_public
-import os, shutil
+import os, shutil, sys
 
 def text_node_to_html_node(text_node):
     text = text_node.text
@@ -101,7 +101,7 @@ def extract_title(markdown):
     raise Exception("No h1 header")
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path) as f:
@@ -126,16 +126,16 @@ def generate_page(from_path, template_path, dest_path):
     with open(file_path, "w") as f:
         f.write(index)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     files = os.listdir(dir_path_content)
     for file in files:
         if os.path.isfile(os.path.join(dir_path_content, file)):
-            generate_page(os.path.join(dir_path_content, file), template_path, dest_dir_path)
+            generate_page(os.path.join(dir_path_content, file), template_path, dest_dir_path, basepath)
         else:
             new_dir_path_content = os.path.join(dir_path_content, file)
             new_dest_dir_path = os.path.join(dest_dir_path, file)
             os.mkdir(new_dest_dir_path)
-            generate_pages_recursive(new_dir_path_content, template_path, new_dest_dir_path)
+            generate_pages_recursive(new_dir_path_content, template_path, new_dest_dir_path, basepath)
     
 
 
@@ -181,6 +181,11 @@ def main():
     # path_to_static = __file__.removesuffix("src/main.py") + "static"
     # path_to_public = __file__.removesuffix("src/main.py") + "public"
 
+    if sys.argv:
+        basepath = sys.argv
+    else:
+        basepath = "/"
+
     path_to_public = "./public"
     path_to_static = "./static"
 
@@ -195,7 +200,7 @@ def main():
 
     # generate_page(content_path, template_path, path_to_public)
 
-    generate_pages_recursive(content_dir, template_path, path_to_public)
+    generate_pages_recursive(content_dir, template_path, path_to_public, basepath)
 
     
 
