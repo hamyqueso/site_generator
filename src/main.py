@@ -122,8 +122,20 @@ def generate_page(from_path, template_path, dest_path):
     index = template.replace("{{ Title }}", title)
     index = index.replace("{{ Content }}", content)
 
-    return index
+    file_path = os.path.join(dest_path, "index.html")
+    with open(file_path, "w") as f:
+        f.write(index)
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    files = os.listdir(dir_path_content)
+    for file in files:
+        if os.path.isfile(os.path.join(dir_path_content, file)):
+            generate_page(os.path.join(dir_path_content, file), template_path, dest_dir_path)
+        else:
+            new_dir_path_content = os.path.join(dir_path_content, file)
+            new_dest_dir_path = os.path.join(dest_dir_path, file)
+            os.mkdir(new_dest_dir_path)
+            generate_pages_recursive(new_dir_path_content, template_path, new_dest_dir_path)
     
 
 
@@ -178,13 +190,12 @@ def main():
 
     copy_static_to_public(path_to_static, path_to_public)
 
-    index_path = "./content/index.md"
+    content_dir = "./content"
     template_path = "template.html"
 
-    index = generate_page(index_path, template_path, path_to_public)
+    # generate_page(content_path, template_path, path_to_public)
 
-    with open("./public/index.html", "w") as f:
-        f.write(index)
+    generate_pages_recursive(content_dir, template_path, path_to_public)
 
     
 
