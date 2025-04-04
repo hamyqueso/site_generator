@@ -122,6 +122,7 @@ def generate_page(from_path, template_path, dest_path, basepath):
     index = template.replace("{{ Title }}", title)
     index = index.replace("{{ Content }}", content)
     index = index.replace('href="/', f'href="{basepath}')
+    index = index.replace('src="/', f'src="{basepath}')
 
     file_path = os.path.join(dest_path, "index.html")
     with open(file_path, "w") as f:
