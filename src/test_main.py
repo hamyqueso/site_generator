@@ -387,6 +387,18 @@ class TestMarkdownToHTML(unittest.TestCase):
             "<div><blockquote>This is a blockquote block</blockquote><p>this is paragraph text</p></div>",
         )
 
+    def test_blockquote_blank_line(self):
+        md = '''
+            > "I am in fact a Hobbit in all but size."
+            >
+            > -- J.R.R. Tolkien
+            '''
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(html,
+        '<div><blockquote>"I am in fact a Hobbit in all but size." -- J.R.R. Tolkien</blockquote></div>'
+        )
+
     def test_paragraph(self):
         md = """
         This is **bolded** paragraph
@@ -400,4 +412,42 @@ class TestMarkdownToHTML(unittest.TestCase):
         self.assertEqual(
             html,
             "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p></div>",
+        )
+
+class TestExtractTitle(unittest.TestCase):
+    def test_extract_title(self):
+        md = "# Hello"
+
+        title = extract_title(md)
+
+        self.assertEqual(
+            title,
+            "Hello"
+        )
+
+    def test_no_title(self):
+        md = """
+            This is **bolded** paragraph
+            text in a p
+            tag here
+
+            """
+        
+        with self.assertRaises(Exception):
+            title = extract_title(md)
+
+    def test_title_not_in_first_block(self):
+        md = """
+            This is **bolded** paragraph
+            text in a p
+            tag here
+
+            # Hello
+            """
+        
+        title = extract_title(md)
+
+        self.assertEqual(
+            title,
+            "Hello"
         )

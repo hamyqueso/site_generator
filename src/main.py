@@ -48,7 +48,7 @@ def markdown_to_html_node(markdown):
         elif block_type == BlockType.QUOTE:
             outer_tag = "blockquote"
             children_nodes = []
-            text_nodes = text_to_textnodes(block.replace("\n> ", " ").lstrip("> "))
+            text_nodes = text_to_textnodes(block.replace("\n>", "").lstrip("> "))
             for node in text_nodes:
                 children_nodes.append(text_node_to_html_node(node))
 
@@ -86,6 +86,44 @@ def markdown_to_html_node(markdown):
             block_nodes.append(ParentNode(outer_tag, [text_node_to_html_node(node) for node in text_nodes]))
     
     return ParentNode("div", block_nodes)
+
+def extract_title(markdown):
+    blocks = markdown_to_blocks(markdown)
+
+    for block in blocks:
+        block_type = block_to_block_type(block)
+
+        if block_type == BlockType.HEADING:
+            heading_tag = f"h{len(block.split()[0])}"
+            if heading_tag == "h1":
+                return block.lstrip("# ")
+    
+    raise Exception("No h1 header")
+
+
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+
+    with open(from_path) as f:
+        md = f.read()
+
+    with open(template_path) as f:
+        template = f.read()
+
+    # with open("markdown.md", 'w') as f:
+    #     f.write(md)
+
+    # with open("extra_template.html", 'w') as f:
+    #     f.write(template)
+
+    content = markdown_to_html_node(md).to_html()
+    title = extract_title(md)
+    print(title)
+    index = template.replace("{{ Title }}", title)
+    index = index.replace("{{ Content }}", content)
+
+    return index
+
     
 
 
@@ -128,13 +166,29 @@ def main():
     #     print(node.to_html())
     # print(markdown_to_html_node(md).to_html())
 
-    path_to_static = __file__.removesuffix("src/main.py") + "static"
-    path_to_public = __file__.removesuffix("src/main.py") + "public"
+    # path_to_static = __file__.removesuffix("src/main.py") + "static"
+    # path_to_public = __file__.removesuffix("src/main.py") + "public"
 
-    shutil.rmtree(path_to_public)
+    path_to_public = "./public"
+    path_to_static = "./static"
+
+    if os.path.exists(path_to_public):
+        shutil.rmtree(path_to_public)
     os.mkdir(path_to_public)
 
     copy_static_to_public(path_to_static, path_to_public)
+
+    index_path = "./content/index.md"
+    template_path = "template.html"
+
+    index = generate_page(index_path, template_path, path_to_public)
+
+    with open("./public/index.html", "w") as f:
+        f.write(index)
+
+    
+
+
 
 if __name__ == "__main__":
     main()
