@@ -183,8 +183,8 @@ def main():
     # path_to_static = __file__.removesuffix("src/main.py") + "static"
     # path_to_public = __file__.removesuffix("src/main.py") + "public"
 
-    if sys.argv:
-        basepath = sys.argv
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
     else:
         basepath = "/"
 
